@@ -14,3 +14,9 @@ $./bitmap_gen <file_name>.bmp
 ```
 
 Macros like ```CMAKE_CXX_COMPILER``` and ```CMAKE_CXX_FLAGS``` are optional. 
+
+## ToDo Features
+* Implement a colormap for different color schemes.
+* Reorganize the ```main()```.
+* Add other types of fractal algorithms.
+* Add image filters.
