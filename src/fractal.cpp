@@ -14,6 +14,27 @@ FractalCreator::~FractalCreator(){
     delete [] m_iterations;
 }
 
+int FractalCreator::get_range(int iteration){
+    /* So all this function does is that for pixels which lead to a certain
+     * no of iterations, it checks which range the iteration belongs to.
+     * Then the pixel is assigned a color according to the color map given
+     * by vector<RGB> colors[range].
+    */
+    int range = 0;
+    for(int i = 0;i < m_ranges.size()-1; i++){
+        if (iteration >= m_ranges[i] && iteration <= m_ranges[i+1]){
+            range = i;
+            break;
+        }
+    }
+    return range;
+}
+
+void FractalCreator::add_range(int iteration, RGB rgb){
+    m_ranges.push_back(iteration);
+    m_colors.push_back(rgb);
+}
+
 int FractalCreator::writeimage_to_file(std::string filename){
     bool ret = m_bitmap.write_to_file(filename);
     if(ret == true)
@@ -45,19 +66,27 @@ void FractalCreator::doIterations(){
 
     for(int y = 0;y < m_height;y++){
         for(int x = 0;x < m_width;x++){
-            uint8_t red = 0;
-            uint8_t green = 0;
-            uint8_t blue = 0;
-            double hue = 0.0;
+            // get the iteration for that pixel pos
             int iterations = m_iterations[y*m_width + x];
+            // find in which range does it belong to
+            int range = get_range(iterations);
+            int startIter = m_ranges[range];
+
+            // it starts with the color at the beginning of the range
+            RGB rgbStart = m_colors[range];
+            // and ends with the color at the end of the range
+            RGB rgbEnd = m_colors[range+1];
+            // calculate the gradient form start to end color values
+            RGB colorDiff = rgbEnd - rgbStart;
+            double hue = 0.0;
 
             if (iterations != Mandelbrot::MAX_ITERATIONS){
-                for(int  i = 0;i < iterations;i++){
+                for(int  i = startIter;i < iterations;i++){
                     hue += (double)(m_histogram[i])/ total;
                 }
-                blue = pow(255,  hue);
-
-                m_bitmap.set_pixel(x, y, red, green, blue);
+                m_bitmap.set_pixel(x, y,rgbStart.r + colorDiff.r*hue,
+                                    rgbStart.g + colorDiff.g*hue,
+                                    rgbStart.b + colorDiff.b*hue);
             }
         }
     }
