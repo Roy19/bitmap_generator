@@ -1,7 +1,8 @@
+#include <time.h>
 #include "fractal.hpp"
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+const int WIDTH = 1440;
+const int HEIGHT = 1080;
 
 int main(int argc, char *argv[]){
     if (argc < 2){
@@ -11,20 +12,15 @@ int main(int argc, char *argv[]){
     std::string filename(argv[1]);
 
     FractalCreator fractal(WIDTH, HEIGHT);
+    
+    clock_t start = clock();
 
-    fractal.add_zoom(zoom(WIDTH/2, HEIGHT/2, 4.0 / WIDTH));
-    fractal.add_zoom(zoom(295, HEIGHT- 202, 0.1));
-    fractal.add_zoom(zoom(390, HEIGHT - 303, 0.1));
-
-    fractal.add_range(0, RGB(0,0,0));
-    fractal.add_range(200, RGB(41, 182, 246));
-    fractal.add_range(500, RGB(132, 255, 255));
-    fractal.add_range(Mandelbrot::MAX_ITERATIONS, RGB(255, 255, 255));
-
-    fractal.doIterations();
+    fractal.iterations_sse2();
     fractal.writeimage_to_file(filename);
     
+    clock_t finish = clock();
 
-    std::cout << "Finished" << std::endl;
+    std::cout << "Finished in : " << (finish - start) / CLOCKS_PER_SEC << "secs" 
+                        << std::endl;
     return 0;
 }

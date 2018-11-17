@@ -3,32 +3,21 @@
 
 #include <string>
 #include <vector>
+#include <cstdio>
 #include <cstdint>
+#include <xmmintrin.h>
 #include "bitmap.hpp"
 #include "mandelbrot.hpp"
-#include "zoom.hpp"
-#include "rgb.hpp"
 
 class FractalCreator{
     int m_width{0};
     int m_height{0};
-    uint32_t *m_histogram{nullptr};
-    uint32_t *m_iterations{nullptr};
-    Bitmap m_bitmap;
-    ZoomList m_zoomList;
-    
-    std::vector<int> m_ranges;
-    std::vector<RGB> m_colors;
+    Bitmap bmap;
 public:
     FractalCreator(int width, int height);
-    ~FractalCreator();
 
-    void add_zoom(const zoom &z);
-    void doIterations();
+    void iterations_sse2();
     int writeimage_to_file(std::string filename);
-
-    int get_range(int iteration);
-    void add_range(int iteration, RGB rgb);
 };
 
 #endif

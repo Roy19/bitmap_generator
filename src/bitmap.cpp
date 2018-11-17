@@ -55,7 +55,7 @@ bool Bitmap::write_to_file(std::string filename){
     return true;
 }
 
-void Bitmap::set_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b){
+void Bitmap::set_pixel(int x[], int y, pixel p[]){
     /* Sets a particular pixel with coordinate (x,y)
      * in the bitmap.
      * 
@@ -69,10 +69,11 @@ void Bitmap::set_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b){
      *          pixel[1] -> green
      *          pixel[2] -> red
     */
-
-   uint8_t *pixel_at_x_y = m_pixels + ((y*3)*m_width + (x*3));  // as each pixel is 3 bytes long
-
-   *pixel_at_x_y = b;
-   *(pixel_at_x_y + 1) = g;
-   *(pixel_at_x_y + 2) = r;
+   uint8_t* pixel_at_x_y;
+   for(int i = 0;i < 4;i++){
+       pixel_at_x_y = m_pixels + ((y*3)*m_width + (x[i]*3));  // as each pixel is 3 bytes long
+       *pixel_at_x_y = p[i].b;
+       *(pixel_at_x_y + 1) = p[i].g;
+       *(pixel_at_x_y + 2) = p[i].r;
+   }
 }

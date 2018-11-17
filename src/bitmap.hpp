@@ -31,6 +31,12 @@ typedef struct _bitmap_info_header{
 
 #pragma pack(pop)
 
+typedef struct _pixel{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+}pixel;
+
 class Bitmap{
 	bitmap_header header;
 	bitmap_info_header info_header;
@@ -43,7 +49,7 @@ public:
 
 	// utility functions
 	bool write_to_file(std::string filename);
-	void set_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b);
+	void set_pixel(int x[], int y, pixel p[]);
 
 	// getter functions
 	bitmap_header get_header(){
