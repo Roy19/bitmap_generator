@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstdint>
 #include <xmmintrin.h>
+#include <emmintrin.h>
 #include "bitmap.hpp"
 #include "mandelbrot.hpp"
 
