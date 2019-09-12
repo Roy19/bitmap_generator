@@ -35,15 +35,15 @@ void FractalCreator::iterations_sse2(){
             int iter = 0;
             __m128 iter_each = _mm_set_ps1(iter);
             while(++iter < MAX_ITERATIONS){
-                __m128 zr1 = zr*zr;
-                __m128 zi1 = zi*zi;
-                __m128 zrzi = zr*zi;
+                __m128 zr1 = _mm_mul_ps(zr, zr);
+                __m128 zi1 = _mm_mul_ps(zi, zi);
+                __m128 zrzi = _mm_mul_ps(zr, zi);
                 // zr = zr*zr - zi*zi + cr
                 // zi = 2*zr*zi + ci
-                zr = zr1 - zi1 + cr;
-                zi = TWO * zrzi + ci;
+                zr = _mm_add_ps(_mm_sub_ps(zr1, zi1), cr);
+                zi = _mm_add_ps(_mm_mul_ps(TWO, zrzi), ci);
 
-                __m128 mag = zr1 + zi1;
+                __m128 mag = _mm_add_ps(_mm_mul_ps(zr, zr), _mm_mul_ps(zi, zi));
                 __m128 mask = _mm_cmplt_ps(mag, FOUR);
                 // increment count only if |x+iy|*|x+iy| < 4
                 iter_each = _mm_and_ps(mask, ONE) + iter_each;
@@ -55,12 +55,12 @@ void FractalCreator::iterations_sse2(){
             iter_each = _mm_mul_ps(iter_each, iter_scale);
             __m128i SRC = _mm_cvtps_epi32(iter_each);
             uint8_t* src = (uint8_t*)&SRC;
-            
+            int xstart = x*3;
             for(int i = 0;i < 4;i++){
-                xcords[i] = x+(i*3);
-                p[i].r = src[i*4];
-                p[i].g = src[i*4];
-                p[i].b = src[i*4];
+                xcords[i] = xstart + (i*3);
+                p[i].r = *(src + (i*4));
+                p[i].g = *(src + (i*4));
+                p[i].b = *(src + (i*4));
             }
             bmap.set_pixel(xcords, y, p);
         }
